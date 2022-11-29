@@ -46,7 +46,7 @@ var runArgs struct {
 
 func cronRunner() {
 	c := cron.New(cron.WithLocation(time.UTC))
-	_, err := c.AddFunc("@every 3s", func() {
+	_, err := c.AddFunc(runArgs.cron, func() {
 		doRequest()
 	})
 	defer c.Stop()
@@ -73,15 +73,15 @@ func timeRunner() {
 }
 
 func doRequest() {
-	fmt.Printf("调用：%v\n", runArgs.url)
+	fmt.Printf("%v => 调用：%v\n", time.Now(), runArgs.url)
 	client := resty.New()
 	res, err := client.R().
 		Get(runArgs.url)
 	if err != nil {
-		fmt.Printf("调用失败: %v\n", err.Error())
+		fmt.Printf("%v => 调用失败: %v\n", time.Now(), err.Error())
 		os.Exit(2)
 	}
-	fmt.Printf("调用结果: %v\n", res.String())
+	fmt.Printf("%v => 调用结果: %v\n", time.Now(), res.String())
 }
 
 func init() {
